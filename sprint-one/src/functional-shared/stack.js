@@ -5,14 +5,10 @@ var Stack = function() {
   //extend(to, from)
 
   var someInstance = {};
-  //var storage = {};
-  someInstance.length = 0;
+  someInstance.storage = {};
+  someInstance.storage.length = 0;
 
-
-  // someInstance.push = stackMethods.push;
-  // someInstance.size = stackMethods.size;
   _.extend(someInstance, stackMethods);
-
 
   return someInstance;
 
@@ -21,26 +17,23 @@ var Stack = function() {
 var stackMethods = {};
 
 stackMethods.push = function(value) {
-  this[length] = value;
-  this.length++;
+  this.storage[length] = value;
+  this.storage.length++;
 }
 
 stackMethods.size = function() {
-  return this.length;
+  return this.storage.length;
 }
 
+stackMethods.pop = function() {
+  var result = this.storage[length-1];
+  if ( this.storage.length > 0 ) {
+    delete this.storage[length-1];
+    this.storage.length--;
+  }
+  
+  return result;
+}
 
-// stackMethods.pop = function() {
-//   var result = storage[length - 1];
-//   delete storage[length - 1];
-//   if ( length > 0 ) {
-//     length--;  
-//   }
-//   return result;
-// }
-
-//  stackMethods.size = function() {
-//   return length;
-// }
 
 
