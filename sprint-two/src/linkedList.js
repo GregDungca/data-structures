@@ -24,11 +24,9 @@ var LinkedList = function() {
   list.removeHead = function() {
     // assign first value to result
     var result = list.head.value;
-    console.log(result);
 
     // reassign all nodes list.head = list.head.next
     list.head = list.head.next;
-    console.log(list.head);
 
     //return result
     return result;
@@ -36,13 +34,6 @@ var LinkedList = function() {
   };
 
   list.contains = function(target) {
-    //recursion
-    //base case: if list.next.value === target
-    //  return true
-    //termination condition: else if list.next = null
-    //  return false
-    //recursive case: else
-    //  return contains (node.next)
 
     var recurse = function(currentNode) {
       if ( currentNode.value === target ) {
@@ -73,3 +64,10 @@ var Node = function(value) {
 /*
  * Complexity: What is the time complexity of the above functions?
  */
+// addToTail: O(1)
+// removeHead: O(1)
+// contains: O(n)
+
+
+
+
