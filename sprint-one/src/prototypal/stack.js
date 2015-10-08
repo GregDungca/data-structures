@@ -18,4 +18,14 @@ stackMethods.push = function(value) {
   this.storage.length++;
 }
 
+stackMethods.pop = function() {
+  var result;
+  if ( this.storage.length > 0 ) {
+    result = this.storage[this.storage.length - 1];
+    delete this.storage[this.storage.length - 1];
+    this.storage.length--;
+  }
+  return result;
+}
+
 
