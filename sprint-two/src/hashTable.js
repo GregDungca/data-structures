@@ -3,32 +3,55 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
-  var numTuples = 0;
+  // this._storage.each(function (bucket) {
+  //   bucket = [];
+  // });
+  for ( var i = 0; i < this._limit; i ++ ) {
+    this._storage.set(i, []);
+  }
+  this._numTuples = 0;
 };
 
 HashTable.prototype.insert = function(k, v) {
 
-  //  if (numTuples / this_.limit > 0.75)
-  if (numTuples / this._limit > 0.75) {
-    var temp = new LimitedArray(this._limit * 2);
-  } else if (numTuples / this._limit < 0.25) {
-    var temp = new LimitedArray(this._limit / 2);
+  //  If Load Factor reaches 75%
+  //console.log(this._numTuples + ',' + this._limit);
+  if (this._numTuples / this._limit >= 0.75) {
+    // Create a temporary array
+
+    var temp = [];
+    this._storage.each(function (bucket) {
+      // Push key/value pairs onto temp
+      //console.table(bucket);
+      for (var i = 0; i < bucket.length; i++) {
+        temp.push(bucket[i]);
+      }
+      bucket = [];
+      //console.log(this._storage);
+    });
+    console.log('Start Iteration');
+    this._storage.each(function(bucket) {
+        console.table(bucket);
+      });
+
+    // Emptied out Hash Table, Now loop through Temp to rehash values back into Hash Table
+    // Double the limit to get new Hash Value
+    this._limit *= 2;
+    for (var i = 0; i < temp.length; i++) {
+      var key = temp[i][0];
+      var value = temp[i][1];
+      this._storage.insert(key, value);
+    } 
   }
-  // _.temp = new limited array
-    // Double in size and rehash
-    reHash.call(temp);
-    // limit * 2;
-  //  else if (numTuples / this_.limit < 0.25)
-    // _.temp = new limited array
-    // Halve in size and rehash
-    // limit / 2;
-  // insert 
+
+  //========================================================
   var index = getIndexBelowMaxForKey(k, this._limit);
 
   if (this._storage.get(index) === undefined || this._storage.get(index) === null) {
 
     var bucket = [[k,v]];
     this._storage.set(index, bucket);
+    this._numTuples++;
   } else {
     var match = false;
     for ( var i = 0; i < this._storage.get(index).length; i ++ ) {
@@ -41,22 +64,9 @@ HashTable.prototype.insert = function(k, v) {
       this._storage.get(index)[matchIndex][1] = v;  
     } else {
       this._storage.get(index).push([k,v]);
-      numTuples++;
+      this._numTuples++;
     }
   }
-  // var reHash = function(temp) {
-  //   this.each(function(bucket) {
-  //     for (var i = 0; i < bucket.length; i++) {
-  //       temp.insert(k, v);
-  //     }
-  //   });
-  //   this._storag = temp
-  // }
-  // var reHash = function()
-    // for each bucket
-      // for each tuple
-          // call insert with the temp hash table
-    // copy temp into ._storage
 };
 
 HashTable.prototype.retrieve = function(k) {
