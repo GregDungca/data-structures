@@ -30,11 +30,17 @@ Graph.prototype.removeNode = function(node) {
   
   // index now equals the correct index in the graph
   // make column and row special characters only
+  
   var index = this.findIndex(node);
-  var nodeInGraph = this.graph[index];
-  for (var i = 0; i < nodeInGraph.length; i++) {
-    nodeInGraph[index][i] = "removed";
-    nodeInGraph[i][index] = "removed";
+
+  // var targetNode = this.graph[index];
+  // for (var i = 0; i < targetNode.length; i++) {
+  //   targetNode[index][i] = "removed";
+  //   targetNode[i][index] = "removed";
+  // }
+  for ( var i = 0; i < this.graph[index]; i ++ ) {
+    this.graph[index][i] = 'removed';
+    this.graph[i][index] = 'removed';
   }
   delete this.valueLookup[index];
 };
@@ -42,20 +48,40 @@ Graph.prototype.removeNode = function(node) {
 // ------------------------
 // Returns a boolean indicating whether two specified nodes are connected.  Pass in the values contained in each of the two nodes.
 Graph.prototype.hasEdge = function(fromNode, toNode) {
-  // This is a comment
-  
+  var edgeExists = false;
+  // Lookup the graph indexes associated with the nodes
+  var fromNodeIndex = this.findIndex(fromNode);
+  var toNodeIndex = this.findIndex(toNode);
+
+  // Lookup the nodes in the graph
+  // var fromNodeInGraph = this.graph[fromNodeIndex];
+  // var toNodeInGraph = this.graph[toNodeIndex];
+
+  if (this.graph[fromNodeIndex][toNodeIndex] === 1) {
+    edgeExists = true;
+  }
+  return edgeExists;
 };
 
 // ------------------------
 // Connects two nodes in a graph by adding an edge between them.
 Graph.prototype.addEdge = function(fromNode, toNode) {
-  //set index of edge to equal 1
-  //  get index of fromNode
-  //    search for node with value of fromNode
-  //  get index of toNode
-  //    search for node with value of toNode
+  
+  // Lookup the graph indexes associated with the nodes
+  var fromNodeIndex = this.findIndex(fromNode);
+  var toNodeIndex = this.findIndex(toNode);
+
+  // Lookup the nodes in the graph
+  // var fromNodeInGraph = this.graph[fromNodeIndex];
+  // var toNodeInGraph = this.graph[toNodeIndex];
+
+  // Change the intersection of the nodes to 1
+  //console.log(fromNodeIndex + ' ' + toNodeIndex);
+  this.graph[toNodeIndex][fromNodeIndex] = 1;
+  this.graph[fromNodeIndex][toNodeIndex] = 1;
 
 };
+
 Graph.prototype.findIndex = function (value) {
   var index;
   for (var key in this.valueLookup) {
@@ -70,11 +96,20 @@ Graph.prototype.findIndex = function (value) {
 // ------------------------
 // Remove an edge between any two specified (by value) nodes.
 Graph.prototype.removeEdge = function(fromNode, toNode) {
+  // Lookup the graph indexes associated with the nodes
+  var fromNodeIndex = this.findIndex(fromNode);
+  var toNodeIndex = this.findIndex(toNode);
+
+  this.graph[toNodeIndex][fromNodeIndex] = 0;
+  this.graph[fromNodeIndex][toNodeIndex] = 0;
 };
 
 // ------------------------
 // Pass in a callback which will be executed on each node of the graph.
 Graph.prototype.forEachNode = function(cb) {
+  for (var key in this.valueLookup) {
+    cb(this.valueLookup[key]);
+  }
 };
 
 /*
