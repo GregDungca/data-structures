@@ -54,7 +54,14 @@ bstMethods.contains = function(val) {
   }
 };
 
-bstMethods.depthFirstLog = function() {
+bstMethods.depthFirstLog = function(func) {
+  func(this.value);
+  if ( this.right === null && this.left === null ) {
+    return false;
+  }
+  else {
+    return ( (this.left === null ? false : this.left.depthFirstLog(func)) || (this.right === null ? false : this.right.depthFirstLog(func) ) );
+  }
 
 };
 
