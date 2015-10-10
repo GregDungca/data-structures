@@ -7,35 +7,35 @@ describe('hashTable', function() {
     hashTable = new HashTable();
   });
 
-  xit('should have methods named "ins ert", "remove", and "retrieve', function() {
+  it('should have methods named "ins ert", "remove", and "retrieve', function() {
     expect(hashTable.insert).to.be.a("function");
     expect(hashTable.remove).to.be.a("function");
     expect(hashTable.retrieve).to.be.a("function");
   });
 
-  xit('should store values that were inserted', function() {
+  it('should store values that were inserted', function() {
     hashTable.insert('Steven', 'Seagal');
     expect(hashTable.retrieve('Steven')).to.equal('Seagal');
   });
 
-  xit('should not contain values that were not inserted', function() {
+  it('should not contain values that were not inserted', function() {
     hashTable.insert('Steven', 'Spielberg');
     expect(hashTable.retrieve('Steven')).not.to.equal('Seagal');
   });
 
-  xit('should overwrite values that have the same key', function() {
+  it('should overwrite values that have the same key', function() {
     hashTable.insert('Bob', 'Loblaw');
     hashTable.insert('Bob', 'Barker');
     expect(hashTable.retrieve('Bob')).to.equal('Barker');
   });
 
-  xit('should not contain values that were removed', function() {
+  it('should not contain values that were removed', function() {
     hashTable.insert('Steven', 'Tyler');
     hashTable.remove('Steven');
     expect(hashTable.retrieve('Steven')).to.equal(null);
   });
 
-  xit('should handle hash function collisions', function(){
+  it('should handle hash function collisions', function(){
     var v1 = "val1";
     var v2 = "val2";
     var oldHashFunction = window.getIndexBelowMaxForKey;
@@ -48,7 +48,7 @@ describe('hashTable', function() {
   });
 
   // (Advanced! Remove the extra "x" when you want the following tests to run)
-  xit ('should double in size when needed', function() {
+  it ('should double in size when needed', function() {
     _.each(people, function(person) {
       var firstName = person[0], lastName = person[1];
       hashTable.insert(firstName,lastName);
