@@ -3,9 +3,6 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
-  // this._storage.each(function (bucket) {
-  //   bucket = [];
-  // });
   for ( var i = 0; i < this._limit; i ++ ) {
     this._storage.set(i, []);
   }
@@ -14,15 +11,9 @@ var HashTable = function() {
 
 HashTable.prototype.insert = function(k, v) {
 
-  //  If Load Factor reaches 75%
-  //console.log(this._numTuples + ',' + this._limit);
   if (this._numTuples / this._limit >= 0.75) {
-    // Create a temporary array
-
     var temp = [];
     this._storage.each(function (bucket) {
-      // Push key/value pairs onto temp
-      //console.table(bucket);
       for (var i = 0; i < bucket.length; i++) {
         temp.push(bucket[i]);
       }
@@ -31,25 +22,38 @@ HashTable.prototype.insert = function(k, v) {
       this._storage.set(i, []);
       this._numTuples = 0;
     }
-    // this._storage.each(function (bucket) {
-    //   console.table(bucket);  
-    // });
-     
-    // Emptied out Hash Table, Now loop through Temp to rehash values back into Hash Table
-    // Double the limit to get new Hash Value
     this._limit *= 2;
-    //console.log(this._limit);
-    console.log('Start temp transfer');
+    this._storage = LimitedArray(this._limit);
     for (var i = 0; i < temp.length; i++) {
-      console.log(i + ',' + temp.length);
       var key = temp[i][0];
       var value = temp[i][1];
       this.insert(key, value);
     }
   }
+  // } else if (this._numTuples / this._limit <= 0.25) {
+  //   var temp = [];
+  //   this._storage.each(function (bucket) {
+  //     for (var i = 0; i < bucket.length; i++) {
+  //       temp.push(bucket[i]);
+  //     }
+  //   });
+  //   for (var i = 0; i < this._limit; i++) {
+  //     this._storage.set(i, []);
+  //     this._numTuples = 0;
+  //   }
+  //   this._limit /= 2;
+  //   this._storage = LimitedArray(this._limit);
+  //   //console.log(this._limit);
+  //   console.log('Start temp transfer');
+  //   for (var i = 0; i < temp.length; i++) {
+  //     console.log(i + ',' + temp.length);
+  //     var key = temp[i][0];
+  //     var value = temp[i][1];
+  //     this.insert(key, value);
+  //   }
+  // }
 
   //========================================================
-  console.log(this._limit);
   var index = getIndexBelowMaxForKey(k, this._limit);
 
   if (this._storage.get(index) === undefined || this._storage.get(index) === null) {
