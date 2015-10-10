@@ -10,9 +10,8 @@ var HashTable = function() {
 };
 
 HashTable.prototype.insert = function(k, v) {
-  this._storage.each(function (bucket) {
-    console.log(bucket);
-  });
+  
+
   // RATIO OVER 75======================================
   if (this._numTuples / this._limit >= 0.75) {
     var temp = [];
@@ -21,42 +20,38 @@ HashTable.prototype.insert = function(k, v) {
         temp.push(bucket[i]);
       }
     });
-    for (var i = 0; i < this._limit; i++) {
-      this._storage.set(i, []);
-      this._numTuples = 0;
-    }
+
     this._limit *= 2;
+    //initialise empty buckets
     this._storage = LimitedArray(this._limit);
+    this._numTuples = 0;
+    for ( var i = 0; i < this._limit; i ++ ) {
+      this._storage.set(i, []);
+    }
+    // log out storage
+    // this._storage.each(function (bucket) {
+    //   console.table(bucket);
+    // });
+    // var x = LimitedArray(2);
+    // debugger;
+    // x.each(function (bucket) {
+    //   console.table(bucket);
+    // });
     //console.log('start iteration');
+    // console.log('start iteration');
     for (var i = 0; i < temp.length; i++) {
       var key = temp[i][0];
       var value = temp[i][1];
       this.insert(key, value);
+      // if ( i === temp.length - 1 ) {
+      //   this._storage.each(function (bucket) {
+      //     console.table(bucket);
+      //   });  
+      // }
     } 
-    // RATIO UNDER 25======================================
+
   }
-  // if (this._numTuples / this._limit < 0.25) {
-  //   var temp = [];
-  //   this._storage.each(function (bucket) {
-  //     for (var i = 0; i < bucket.length; i++) {
-  //       temp.push(bucket[i]);
-  //     }
-  //   });
-  //   for (var i = 0; i < this._limit; i++) {
-  //     this._storage.set(i, []);
-  //     this._numTuples = 0;
-  //   }
-  //   this._limit /= 2;
-  //   this._storage = LimitedArray(this._limit);
-  //   //console.log(this._limit);
-  //   console.log('Start temp transfer');
-  //   for (var i = 0; i < temp.length; i++) {
-  //     console.log(i + ',' + temp.length);
-  //     var key = temp[i][0];
-  //     var value = temp[i][1];
-  //     this.insert(key, value);
-  // }
-    //========================================================
+
   
   var index = getIndexBelowMaxForKey(k, this._limit);
   if (this._storage.get(index) === undefined || this._storage.get(index) === null) {
@@ -78,9 +73,11 @@ HashTable.prototype.insert = function(k, v) {
       this._numTuples++;
     }
   }
+  // console.log(this._numTuples);
   // this._storage.each(function (bucket) {
   //   console.table(bucket);
   // });
+  
 };
 
 HashTable.prototype.retrieve = function(k) {
@@ -99,14 +96,65 @@ HashTable.prototype.retrieve = function(k) {
 };
 
 HashTable.prototype.remove = function(k) {
+  console.log(this._numTuples);
   var index = getIndexBelowMaxForKey(k, this._limit);
   // find correct index in storage
     // find correct place in bucket
         // set to null
-  this._storage.set(index, null);
+  
+
+  if (this._numTuples / this._limit < 0.25 ) {
+    console.log('here' + ',' + this._numTuples + ',' + this._limit);
+    var temp = [];
+    this._storage.each(function (bucket) {
+      for (var i = 0; i < bucket.length; i++) {
+        temp.push(bucket[i]);
+      }
+    });
+
+    this._limit /= 2;
+
+    this._storage = LimitedArray(this._limit);
+    for ( var i = 0; i < this._limit; i ++ ) {
+      this._storage.set(i, []);
+    }
+
+    for (var i = 0; i < temp.length; i++) {
+      var key = temp[i][0];
+      var value = temp[i][1];
+      this.insert(key, value);
+      // if ( i === temp.length - 1 ) {
+      //   this._storage.each(function (bucket) {
+      //     console.table(bucket);
+      //   });  
+      // }
+    } 
+  }
+
+  this._storage.each(function(bucket, bucketIndex) {
+    if ( bucketIndex === index ) {
+      for ( var i = 0; i < bucket.length; i ++ ) {
+        if ( bucket[i][0] === k ) {
+          // bucket[i][0] = null;
+          bucket[i][1] = null;
+          console.log('removing...');
+          this._numTuples--;
+        }
+      }
+    }
+  });
+
+  // this._storage.each(function (bucket) {
+  //   console.table(bucket);
+  // });
+  
 };
 
-
+// Get correct bucket number from hash function for that key
+// if bucket is not empty, loop through until key match or end
+  // if match, remove by setting [k, v] to null
+  // if end, no match
+// if bucket is empty, no match
 
 /*
  * Complexity: What is the time complexity of the above functions?

@@ -30,7 +30,7 @@ bstMethods.insert = function (val) {
   }
 };
 bstMethods.contains = function(val) {
-  console.log(val);
+
   // Recursion
   // Base case: if this.value = val
   //   return true 
