@@ -10,7 +10,10 @@ var HashTable = function() {
 };
 
 HashTable.prototype.insert = function(k, v) {
-
+  this._storage.each(function (bucket) {
+    console.log(bucket);
+  });
+  // RATIO OVER 75======================================
   if (this._numTuples / this._limit >= 0.75) {
     var temp = [];
     this._storage.each(function (bucket) {
@@ -24,13 +27,15 @@ HashTable.prototype.insert = function(k, v) {
     }
     this._limit *= 2;
     this._storage = LimitedArray(this._limit);
+    //console.log('start iteration');
     for (var i = 0; i < temp.length; i++) {
       var key = temp[i][0];
       var value = temp[i][1];
       this.insert(key, value);
-    }
+    } 
+    // RATIO UNDER 25======================================
   }
-  // } else if (this._numTuples / this._limit <= 0.25) {
+  // if (this._numTuples / this._limit < 0.25) {
   //   var temp = [];
   //   this._storage.each(function (bucket) {
   //     for (var i = 0; i < bucket.length; i++) {
@@ -50,14 +55,11 @@ HashTable.prototype.insert = function(k, v) {
   //     var key = temp[i][0];
   //     var value = temp[i][1];
   //     this.insert(key, value);
-  //   }
   // }
-
-  //========================================================
+    //========================================================
+  
   var index = getIndexBelowMaxForKey(k, this._limit);
-
   if (this._storage.get(index) === undefined || this._storage.get(index) === null) {
-
     var bucket = [[k,v]];
     this._storage.set(index, bucket);
     this._numTuples++;
@@ -76,6 +78,9 @@ HashTable.prototype.insert = function(k, v) {
       this._numTuples++;
     }
   }
+  // this._storage.each(function (bucket) {
+  //   console.table(bucket);
+  // });
 };
 
 HashTable.prototype.retrieve = function(k) {
