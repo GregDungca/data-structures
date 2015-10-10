@@ -6,24 +6,9 @@ var HashTable = function() {
 };
 
 HashTable.prototype.insert = function(k, v) {
-  
-  if (this._numTuples / this._limit >= 0.75) {
-    var temp = [];
-    this._storage.each(function (bucket) {
-      for (var i = 0; i < bucket.length; i++) {
-        temp.push(bucket[i]);
-      }
-    });
 
-    this._limit *= 2;
-
-    HashTable.prototype._initialize.call(this);    
-
-    for (var i = 0; i < temp.length; i++) {
-      if ( temp[i][1] !== null ) {
-        this.insert(temp[i][0], temp[i][1]);  
-      }
-    } 
+  if ( this._numTuples / this._limit >= 0.75 ) {
+    HashTable.prototype._resize.call(this,'double');  
   }
 
   var index = getIndexBelowMaxForKey(k, this._limit);
@@ -65,27 +50,13 @@ HashTable.prototype.retrieve = function(k) {
 };
 
 HashTable.prototype.remove = function(k) {
-  console.log(this._numTuples);
   var index = getIndexBelowMaxForKey(k, this._limit);
   var removed = false;
 
-  if (this._numTuples / this._limit < 0.25 ) {
-    var temp = [];
-    this._storage.each(function (bucket) {
-      for (var i = 0; i < bucket.length; i++) {
-        temp.push(bucket[i]);
-      }
-    });
-    this._limit /= 2;
-    HashTable.prototype._initialize.call(this);
-
-    for (var i = 0; i < temp.length; i++) {
-      if ( temp[i][1] !== null ) {
-        this.insert(temp[i][0], temp[i][1]);  
-      }
-    }
+  if ( this._numTuples / this._limit < 0.25 ) {
+    HashTable.prototype._resize.call(this, 'half');
   }
-
+  
   this._storage.each(function(bucket, bucketIndex) {
     if ( bucketIndex === index ) {
       for ( var i = 0; i < bucket.length; i ++ ) {
@@ -115,36 +86,32 @@ HashTable.prototype._initialize = function() {
 }
 
 HashTable.prototype._resize = function(type) {
-  var resizeCondition;
+  var temp = [];
   if ( type === 'half' ) {
-    resizeCondition = this._numTuples / this._limit >= 0.75
+    this._limit /= 2;
   }
 
   else if ( type === 'double') {
-    resizeCondition = this._numTuples / this._limit < 0.25
+    this._limit *= 2;
   }
 
   else {
     throw new Error('_initialize was not passed "half" or "double"');
   }
+  
+  this._storage.each(function (bucket) {
+    for (var i = 0; i < bucket.length; i++) {
+      temp.push(bucket[i]);
+    }
+  });
+  
+  HashTable.prototype._initialize.call(this);
 
-  if ( resizeCondition ) {
-    var temp = [];
-    this._storage.each(function (bucket) {
-      for (var i = 0; i < bucket.length; i++) {
-        temp.push(bucket[i]);
-      }
-    });
-    this._limit /= 2;
-    HashTable.prototype._initialize.call(this);
-
-    for (var i = 0; i < temp.length; i++) {
-      if ( temp[i][1] !== null ) {
-        this.insert(temp[i][0], temp[i][1]);  
-      }
+  for (var i = 0; i < temp.length; i++) {
+    if ( temp[i][1] !== null ) {
+      this.insert(temp[i][0], temp[i][1]);  
     }
   }
-
 
 }
 
