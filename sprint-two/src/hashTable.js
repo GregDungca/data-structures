@@ -26,25 +26,30 @@ HashTable.prototype.insert = function(k, v) {
       for (var i = 0; i < bucket.length; i++) {
         temp.push(bucket[i]);
       }
-      bucket = [];
-      //console.log(this._storage);
     });
-    console.log('Start Iteration');
-    this._storage.each(function(bucket) {
-        console.table(bucket);
-      });
-
+    for (var i = 0; i < this._limit; i++) {
+      this._storage.set(i, []);
+      this._numTuples = 0;
+    }
+    // this._storage.each(function (bucket) {
+    //   console.table(bucket);  
+    // });
+     
     // Emptied out Hash Table, Now loop through Temp to rehash values back into Hash Table
     // Double the limit to get new Hash Value
     this._limit *= 2;
+    //console.log(this._limit);
+    console.log('Start temp transfer');
     for (var i = 0; i < temp.length; i++) {
+      console.log(i + ',' + temp.length);
       var key = temp[i][0];
       var value = temp[i][1];
-      this._storage.insert(key, value);
-    } 
+      this.insert(key, value);
+    }
   }
 
   //========================================================
+  console.log(this._limit);
   var index = getIndexBelowMaxForKey(k, this._limit);
 
   if (this._storage.get(index) === undefined || this._storage.get(index) === null) {
